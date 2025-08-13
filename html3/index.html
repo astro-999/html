@@ -1,0 +1,26 @@
+function checkout() {
+  if (order.length === 0) {
+    alert('Your order is empty!');
+    return;
+  }
+
+  const orderData = {
+    items: order.map(({id, name, price, qty}) => ({id, name, price, qty}))
+  };
+
+  fetch('http://localhost:3000/api/order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderData)
+  })
+  .then(res => res.json())
+  .then(data => {
+    alert(data.message + ` Order ID: ${data.orderId}`);
+    order.length = 0; // clear order
+    renderOrder();
+  })
+  .catch(err => {
+    alert('Error submitting order.');
+    console.error(err);
+  });
+}

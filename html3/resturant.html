@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Restaurant Management System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #fff8f0;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #d35400;
+    }
+    .menu, .order {
+      width: 45%;
+      display: inline-block;
+      vertical-align: top;
+      margin: 1%;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 8px #d35400;
+    }
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    button {
+      background: #d35400;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e67e22;
+    }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Restaurant Management System</h1>
+
+  <div class="menu">
+    <h2>Menu</h2>
+    <div id="menu-items"></div>
+  </div>
+
+  <div class="order">
+    <h2>Your Order</h2>
+    <ul id="order-list"></ul>
+    <p><strong>Total:</strong> $<span id="total">0.00</span></p>
+    <button onclick="checkout()">Checkout</button>
+  </div>
+
+  <script>
+    const menu = [
+      { id: 1, name: 'Margherita Pizza', price: 8.99 },
+      { id: 2, name: 'Caesar Salad', price: 5.99 },
+      { id: 3, name: 'Spaghetti Bolognese', price: 10.99 },
+      { id: 4, name: 'Grilled Chicken', price: 12.49 },
+      { id: 5, name: 'Chocolate Cake', price: 4.99 },
+    ];
+
+    const order = [];
+
+    const menuDiv = document.getElementById('menu-items');
+    const orderList = document.getElementById('order-list');
+    const totalSpan = document.getElementById('total');
+
+    function renderMenu() {
+      menu.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+        div.innerHTML = `
+          <span>${item.name} - $${item.price.toFixed(2)}</span>
+          <button onclick="addToOrder(${item.id})">Add</button>
+        `;
+        menuDiv.appendChild(div);
+      });
+    }
+
+    function addToOrder(id) {
+      const item = menu.find(i => i.id === id);
+      const orderItem = order.find(o => o.id === id);
+      if (orderItem) {
+        orderItem.qty += 1;
+      } else {
+        order.push({ ...item, qty: 1 });
+      }
+      renderOrder();
+    }
+
+    function renderOrder() {
+      orderList.innerHTML = '';
+      let total = 0;
+      order.forEach(item => {
+        total += item.price * item.qty;
+        const li = document.createElement('li');
+        li.textContent = `${item.name} x ${item.qty} = $${(item.price * item.qty).toFixed(2)}`;
+        orderList.appendChild(li);
+      });
+      totalSpan.textContent = total.toFixed(2);
+    }
+
+    function checkout() {
+      if (order.length === 0) {
+        alert('Your order is empty!');
+        return;
+      }
+      alert(`Thank you for your order! Total: $${totalSpan.textContent}`);
+      order.length = 0;  // Clear order
+      renderOrder();
+    }
+
+    renderMenu();
+  </script>
+
+</body>
+</html>
+
